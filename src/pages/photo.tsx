@@ -1,5 +1,4 @@
-import { NextPage } from "next";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
 import SearchItems from "../component/SearchItems";
@@ -12,6 +11,7 @@ const Photos = () => {
   } = useForm();
 
   const router = useRouter();
+  const { data: session } = useSession();
   const { page, tags } = router.query;
   const { status } = useSession({
     required: true,
@@ -21,7 +21,6 @@ const Photos = () => {
   });
 
   const onSubmit: SubmitHandler<{ search?: string }> = ({ search }) => {
-    console.log("search", search);
     router.push(`/photo?tags=${search}`);
   };
 
@@ -34,25 +33,28 @@ const Photos = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-gray-100">
       <div className="p-5">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="mx-auto mt-1  flex max-w-lg rounded-md shadow-sm"
+          className="flex justify-around rounded-md shadow-sm"
         >
+          <p className="pr-10 text-cyan-600">
+            Signed in as {session?.user?.email}
+          </p>
           <div className="relative flex flex-grow items-stretch focus-within:z-10">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <div className="h-5 w-5 text-gray-400" aria-hidden="true" />
+              <div className="h-5 w-5 text-cyan-400" aria-hidden="true" />
             </div>
             <input
-              className="block w-full rounded-none rounded-l-md border-gray-800 pl-10 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm "
+              className="block w-full rounded-none rounded-l-md border-2 border-cyan-300 pl-10 focus:border-cyan-600 focus:ring-cyan-600 sm:text-sm "
               placeholder="Search Tag"
               {...register("search", { required: true })}
             />
           </div>
           <button
             type="submit"
-            className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            className="relative mr-10 -ml-px inline-flex items-center space-x-2 rounded-r-md border border-cyan-300 bg-cyan-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-cyan-100 focus:border-cyan-600 focus:outline-none focus:ring-1 focus:ring-cyan-600"
           >
             <div
               className="h-5 w-5 justify-center text-gray-400"
@@ -60,9 +62,16 @@ const Photos = () => {
             />
             <span>Search</span>
           </button>
+          <button
+            onClick={() => signOut()}
+            type="button"
+            className="ml-10 inline-flex items-center rounded-md border border-transparent bg-cyan-100 px-4 py-2 text-sm font-medium text-cyan-600 hover:bg-cyan-200 focus:outline-none focus:ring-2 focus:ring-cyan-600 focus:ring-offset-2"
+          >
+            Sign Out
+          </button>
         </form>
       </div>
-      <div className="flex h-full flex-1 flex-col">
+      <div className="flex h-full flex-1 flex-col pl-10">
         <div className="flex-1">
           {tags && <SearchItems page={page} tags={tags} />}
         </div>

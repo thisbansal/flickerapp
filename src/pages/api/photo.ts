@@ -41,12 +41,10 @@ export default async function handler(
     }&tags=${tags
       .split(" ")
       .join(
-        ","
+        "+"
       )}&safe_search=1&per_page=${LIMIT_PER_PAGE}&page=${page_number}&media=photos&extras=url_w&format=json&nojsoncallback=1`;
     const resp = await fetch(url).then((res) => res.json());
-    console.log(resp.photos.photo);
     const result = flickerResponseSchema.parse(resp);
-    console.log({ resp, url });
     res.status(200).setHeader("cache-control", "max-age=120").json(result);
   } catch (err) {
     res.status(500).json({ error: "something went wrong" });

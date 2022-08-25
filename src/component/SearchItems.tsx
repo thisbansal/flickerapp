@@ -18,11 +18,11 @@ const SearchItems: React.FC<{ tags: string; page: string | undefined }> = ({
   );
 
   if (!data) {
-    return <div>Loading ...</div>;
+    return <div className="text-cyan-600">Loading ...</div>;
   }
 
   if (error) {
-    return <div>something went wrong</div>;
+    return <div className="text-cyan-600">something went wrong</div>;
   }
 
   return (
