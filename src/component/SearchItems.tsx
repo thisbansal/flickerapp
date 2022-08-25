@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { PhotosErorr, PhotosResponse } from "../pages/api/photo";
+import Image from "next/image";
 
 const SearchItems: React.FC<{ tags: string; page: string | undefined }> = ({
   tags,
@@ -26,35 +27,21 @@ const SearchItems: React.FC<{ tags: string; page: string | undefined }> = ({
 
   return (
     <div>
-      {JSON.stringify(data)}
-      <div>
-        {parseInt(page, 10) > 0 && (
-          <button
-            onClick={() => {
-              router.push(
-                `/photo?tags=${tags}&page=${(
-                  parseInt(page as string, 10) - 1
-                ).toString()}`
-              );
-            }}
-          >
-            Previous
-          </button>
-        )}
-        {parseInt(page, 10) < data.photos.pages && (
-          <button
-            onClick={() => {
-              router.push(
-                `/photo?tags=${tags}&page=${(
-                  parseInt(page, 10) + 1
-                ).toString()}`
-              );
-            }}
-          >
-            Next
-          </button>
-        )}
-      </div>
+      {data.photos.photo.map((photo) => {
+        if (!photo.url_w) {
+          return <div></div>;
+        }
+
+        return (
+          <Image
+            key={photo.id}
+            src={photo.url_w}
+            alt="Picture of the author"
+            width={400}
+            height={320}
+          />
+        );
+      })}
     </div>
   );
 };

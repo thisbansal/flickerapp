@@ -13,7 +13,7 @@ const flickerResponseSchema = z.object({
     photo: z.array(
       z.object({
         id: z.string(),
-        url_o: z.string().optional(),
+        url_w: z.string().optional(),
       })
     ),
   }),
@@ -30,17 +30,24 @@ export default async function handler(
   res: NextApiResponse<APIResponse>
 ) {
   const { tags, page_number = 1 } = req.query;
-  if (!tags) {
+  if (!tags || Array.isArray(tags)) {
     res.status(400).json({ error: "Missing search query" });
     return;
   }
 
   try {
-    const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${env.FLICKER_API_KEY}&tags=${tags}&safe_search=1&per_page=${LIMIT_PER_PAGE}&page=${page_number}&media=photos&extras=url_o&format=json&nojsoncallback=1`;
+    const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${
+      env.FLICKER_API_KEY
+    }&tags=${tags
+      .split(" ")
+      .join(
+        ","
+      )}&safe_search=1&per_page=${LIMIT_PER_PAGE}&page=${page_number}&media=photos&extras=url_w&format=json&nojsoncallback=1`;
     const resp = await fetch(url).then((res) => res.json());
+    console.log(resp.photos.photo);
     const result = flickerResponseSchema.parse(resp);
     console.log({ resp, url });
-    res.status(200).json(result);
+    res.status(200).setHeader("cache-control", "max-age=120").json(result);
   } catch (err) {
     res.status(500).json({ error: "something went wrong" });
   }
