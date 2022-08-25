@@ -13,17 +13,17 @@ const flickerResponseSchema = z.object({
     photo: z.array(
       z.object({
         id: z.string(),
-        url_o: z.string(),
+        url_o: z.string().optional(),
       })
     ),
   }),
 });
 
-type Error = {
+export type PhotosErorr = {
   error: string;
 };
-type FlickerResponse = z.infer<typeof flickerResponseSchema>;
-type APIResponse = FlickerResponse | Error;
+export type PhotosResponse = z.infer<typeof flickerResponseSchema>;
+type APIResponse = PhotosResponse | PhotosErorr;
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,6 +39,7 @@ export default async function handler(
     const url = `https://www.flickr.com/services/rest/?method=flickr.photos.search&api_key=${env.FLICKER_API_KEY}&tags=${tags}&safe_search=1&per_page=${LIMIT_PER_PAGE}&page=${page_number}&media=photos&extras=url_o&format=json&nojsoncallback=1`;
     const resp = await fetch(url).then((res) => res.json());
     const result = flickerResponseSchema.parse(resp);
+    console.log({ resp, url });
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ error: "something went wrong" });
