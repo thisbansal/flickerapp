@@ -1,13 +1,10 @@
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import useSWR from "swr";
-import SearchItems from "../component/searchItems";
-import type { PhotosErorr, PhotosResponse } from "./api/photo";
+import SearchItems from "../component/SearchItems";
 
-const Photos: NextPage = () => {
+const Photos = () => {
   const {
     register,
     handleSubmit,
