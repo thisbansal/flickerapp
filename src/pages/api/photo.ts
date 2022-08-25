@@ -4,7 +4,7 @@ import { URL } from "url";
 import { z } from "zod";
 import { env } from "../../env/server.mjs";
 
-const LIMIT_PER_PAGE = 10;
+const LIMIT_PER_PAGE = 12;
 
 const flickerResponseSchema = z.object({
   photos: z.object({
