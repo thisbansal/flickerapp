@@ -7,15 +7,16 @@ const Home: NextPage = () => {
   if (session) {
     return (
       <>
-        Signed in as {session?.user?.email} <br />
+        <h1 className="3xl underline">Signed in as {session?.user?.email}</h1>
+
+        <br />
         <button onClick={() => signOut()}>Sign out</button>
       </>
     );
   }
   return (
     <>
-      Not signed in <br />
-      <h1>Welcome to the App</h1>
+      <h1 className="text-3xl font-bold">Welcome to the App</h1>
       <button onClick={() => signIn()}>Sign in</button>
     </>
   );
